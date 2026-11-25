@@ -1,0 +1,251 @@
+@import "tailwindcss";
+
+@theme {
+  --color-paper: #f4f1ec;
+  --color-paper-deep: #ebe6de;
+  --color-ink: #1a1917;
+  --color-ink-soft: #3a3834;
+  --color-stone: #6b665e;
+  --color-line: #d8d1c6;
+  --color-accent: #8c5b3e;
+
+  --font-serif: var(--font-bodoni), "Bodoni 72", Didot, Georgia, serif;
+  --font-sans: var(--font-jost), "Futura", "Helvetica Neue", Arial, sans-serif;
+
+  --ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-in-out-soft: cubic-bezier(0.65, 0, 0.35, 1);
+
+  --breakpoint-3xl: 1920px;
+}
+
+@layer base {
+  :root {
+    color-scheme: light;
+    --gutter: clamp(1rem, 4vw, 3.5rem);
+    --header-h: 4.5rem;
+  }
+
+  html {
+    -webkit-text-size-adjust: 100%;
+    text-rendering: optimizeLegibility;
+  }
+
+  body {
+    background: var(--color-paper);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    font-weight: 400;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  ::selection {
+    background: var(--color-ink);
+    color: var(--color-paper);
+  }
+
+  :focus-visible {
+    outline: 1px solid currentColor;
+    outline-offset: 4px;
+  }
+
+  img {
+    user-select: none;
+  }
+}
+
+@layer components {
+  /* Page gutter shared by every section. */
+  .px-page {
+    padding-inline: var(--gutter);
+  }
+
+  /* Small uppercase labels: eyebrows, metadata, nav. */
+  .label {
+    font-family: var(--font-sans);
+    font-size: 0.6875rem;
+    font-weight: 500;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    line-height: 1.4;
+  }
+
+  .display-xl {
+    font-family: var(--font-serif);
+    font-weight: 400;
+    font-size: clamp(3rem, 9vw, 9.5rem);
+    line-height: 0.92;
+    letter-spacing: -0.025em;
+  }
+
+  .display-lg {
+    font-family: var(--font-serif);
+    font-weight: 400;
+    font-size: clamp(2.5rem, 6vw, 6rem);
+    line-height: 0.98;
+    letter-spacing: -0.02em;
+  }
+
+  .display-md {
+    font-family: var(--font-serif);
+    font-weight: 400;
+    font-size: clamp(1.75rem, 3.4vw, 3.25rem);
+    line-height: 1.08;
+    letter-spacing: -0.015em;
+  }
+
+  .lede {
+    font-family: var(--font-serif);
+    font-size: clamp(1.25rem, 2.1vw, 1.9rem);
+    line-height: 1.35;
+    letter-spacing: -0.005em;
+  }
+
+  /* Underline that draws in from the left on hover. */
+  .link-underline {
+    background-image: linear-gradient(currentColor, currentColor);
+    background-size: 0% 1px;
+    background-position: 0 100%;
+    background-repeat: no-repeat;
+    transition: background-size 0.6s var(--ease-out-soft);
+    padding-bottom: 2px;
+  }
+  .link-underline:hover,
+  .link-underline:focus-visible,
+  .link-underline[aria-current="page"] {
+    background-size: 100% 1px;
+  }
+}
+
+/* ---------- Scroll reveals (driven by <Reveal>) ---------- */
+
+.reveal {
+  opacity: 0;
+  transform: translate3d(0, 2rem, 0);
+  transition:
+    opacity 1.1s var(--ease-out-soft),
+    transform 1.3s var(--ease-out-soft);
+  transition-delay: var(--reveal-delay, 0ms);
+}
+.reveal[data-visible="true"] {
+  opacity: 1;
+  transform: none;
+}
+
+/* Images uncover upward like a curtain. */
+.reveal-image {
+  clip-path: inset(12% 0 0 0);
+  transition: clip-path 1.6s var(--ease-out-soft);
+  transition-delay: var(--reveal-delay, 0ms);
+}
+.reveal-image > * {
+  transform: scale(1.12);
+  transition: transform 2.2s var(--ease-out-soft);
+  transition-delay: var(--reveal-delay, 0ms);
+}
+.reveal-image[data-visible="true"] {
+  clip-path: inset(0 0 0 0);
+}
+.reveal-image[data-visible="true"] > * {
+  transform: none;
+}
+
+/* ---------- Hero slideshow ---------- */
+
+@keyframes hero-drift {
+  from {
+    transform: scale(1.12);
+  }
+  to {
+    transform: scale(1);
+  }
+}
+
+.hero-slide {
+  opacity: 0;
+  transition: opacity 1.8s var(--ease-in-out-soft);
+}
+.hero-slide[data-active="true"] {
+  opacity: 1;
+}
+.hero-slide[data-active="true"] img {
+  animation: hero-drift 9s linear both;
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 110%, 0);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.rise {
+  display: inline-block;
+  animation: rise 1.4s var(--ease-out-soft) both;
+  animation-delay: var(--rise-delay, 0ms);
+}
+
+@keyframes scroll-cue {
+  0% {
+    transform: scaleY(0);
+    transform-origin: top;
+  }
+  45% {
+    transform: scaleY(1);
+    transform-origin: top;
+  }
+  55% {
+    transform: scaleY(1);
+    transform-origin: bottom;
+  }
+  100% {
+    transform: scaleY(0);
+    transform-origin: bottom;
+  }
+}
+.scroll-cue {
+  animation: scroll-cue 2.4s var(--ease-in-out-soft) infinite;
+}
+
+/* ---------- Route transitions (React <ViewTransition>) ---------- */
+
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 0.5s;
+  animation-timing-function: var(--ease-out-soft);
+}
+
+::view-transition-group(.morph) {
+  animation-duration: 0.7s;
+  animation-timing-function: var(--ease-out-soft);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    transition-delay: 0ms !important;
+  }
+  .reveal,
+  .reveal-image,
+  .reveal-image > * {
+    opacity: 1;
+    transform: none;
+    clip-path: none;
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
